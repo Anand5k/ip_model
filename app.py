@@ -7,20 +7,28 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Google Drive link for the model
-DRIVE_URL = "YOUR_NEW_DRIVE_LINK_WITH_H5"
+# Google Drive direct download link
+DRIVE_URL = "https://drive.google.com/uc?id=1CFLzcTN41YIWwFBTE9q0luEETHt_lduh"
 MODEL_PATH = "image_classifier.h5"
 
-# Download model if not present
-if not os.path.exists(MODEL_PATH):
-    print("🔄 Downloading model from Google Drive...")
-    gdown.download(DRIVE_URL, MODEL_PATH, quiet=False)
+# Download the model if it doesn't exist
+def download_model():
     if not os.path.exists(MODEL_PATH):
-        raise FileNotFoundError("❌ Model download failed!")
+        print("🔄 Downloading model from Google Drive...")
+        try:
+            gdown.download(DRIVE_URL, MODEL_PATH, quiet=False)
+            print("✅ Model downloaded successfully.")
+        except Exception as e:
+            raise RuntimeError(f"❌ Failed to download model: {e}")
+
+download_model()
 
 # Load the trained model
-model = load_model(MODEL_PATH)
-print("✅ Model loaded successfully.")
+try:
+    model = load_model(MODEL_PATH)
+    print("✅ Model loaded successfully.")
+except Exception as e:
+    raise RuntimeError(f"❌ Failed to load model: {e}")
 
 # Define class labels
 class_labels = ["Algae", "Black Crust", "Crack", "Erosion", "Graffiti"]
