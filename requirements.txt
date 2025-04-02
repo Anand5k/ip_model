@@ -1,5 +1,5 @@
 Flask
+requests
 tensorflow
-opencv-python
+opencv-python-headless
 numpy
-gdown
